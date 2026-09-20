@@ -1,0 +1,53 @@
+---
+- name: Проверить, инициализирован ли репозиторий borg
+  ansible.builtin.command:
+    cmd: "borg info {{ borg_repo }}"
+  environment:
+    BORG_PASSPHRASE: "{{ borg_passphrase }}"
+    BORG_RSH: "ssh -o StrictHostKeyChecking=accept-new"
+  register: borg_info
+  changed_when: false
+  failed_when: false
+
+- name: Инициализировать репозиторий borg (encryption=repokey)
+  ansible.builtin.command:
+    cmd: "borg init --encryption=repokey {{ borg_repo }}"
+  environment:
+    BORG_PASSPHRASE: "{{ borg_passphrase }}"
+    BORG_RSH: "ssh -o StrictHostKeyChecking=accept-new"
+  when: borg_info.rc != 0
+
+- name: Положить скрипт бэкапа
+  ansible.builtin.template:
+    src: borg-backup.sh.j2
+    dest: /usr/local/bin/borg-backup.sh
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: systemd unit — сервис бэкапа
+  ansible.builtin.template:
+    src: borg-backup.service.j2
+    dest: /etc/systemd/system/borg-backup.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload systemd
+
+- name: systemd unit — таймер (каждые 5 минут)
+  ansible.builtin.template:
+    src: borg-backup.timer.j2
+    dest: /etc/systemd/system/borg-backup.timer
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload systemd
+
+- name: Применить reload systemd сразу (перед enable/start)
+  ansible.builtin.meta: flush_handlers
+
+- name: Включить и запустить таймер
+  ansible.builtin.systemd:
+    name: borg-backup.timer
+    enabled: true
+    state: started

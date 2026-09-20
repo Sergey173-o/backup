@@ -1,0 +1,25 @@
+---
+- name: Сгенерировать SSH-ключ для root (используется для подключения к backup_server)
+  ansible.builtin.command:
+    cmd: ssh-keygen -t ed25519 -N "" -f /root/.ssh/id_ed25519
+    creates: /root/.ssh/id_ed25519
+
+- name: Прочитать публичный ключ
+  ansible.builtin.slurp:
+    src: /root/.ssh/id_ed25519.pub
+  register: client_pubkey_raw
+
+- name: Сохранить публичный ключ как факт (используется в роли backup_server)
+  ansible.builtin.set_fact:
+    client_pubkey_content: "{{ client_pubkey_raw.content | b64decode | trim }}"
+
+- name: Отключить строгую проверку host key для backup_server (упрощение для стенда)
+  ansible.builtin.copy:
+    dest: /root/.ssh/config
+    owner: root
+    group: root
+    mode: '0600'
+    content: |
+      Host 192.168.56.11 backup-server
+        StrictHostKeyChecking accept-new
+        User {{ borg_user }}

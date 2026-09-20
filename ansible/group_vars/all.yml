@@ -1,0 +1,14 @@
+---
+borg_user: borg
+backup_mount_point: /var/backup
+backup_disk_device: /dev/sdb   # проверить lsblk на backup_server, если имя другое
+
+borg_repo: "{{ borg_user }}@192.168.56.11:{{ backup_mount_point }}/"
+borg_backup_target: /etc
+
+# ВНИМАНИЕ: для реального стенда вынести в ansible-vault (ansible-vault encrypt_string)
+borg_passphrase: "Otus1234SuperSecret"
+
+backup_keep_daily: 90
+backup_keep_monthly: 12
+backup_keep_yearly: 1

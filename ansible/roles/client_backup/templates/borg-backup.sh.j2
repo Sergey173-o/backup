@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO="{{ borg_repo }}"
+export BORG_PASSPHRASE="{{ borg_passphrase }}"
+export BORG_RELOCATED_REPO_ACCESS_IS_OK=yes
+export BORG_RSH="ssh -o StrictHostKeyChecking=accept-new"
+
+ARCHIVE="etc-$(date +%Y-%m-%d_%H:%M:%S)"
+
+echo "=== [$(date -Is)] Начало бэкапа: ${ARCHIVE} ==="
+
+borg create --stats --list "${REPO}::${ARCHIVE}" {{ borg_backup_target }}
+
+echo "=== [$(date -Is)] Проверка целостности репозитория ==="
+borg check "${REPO}"
+
+echo "=== [$(date -Is)] Очистка старых архивов (prune) ==="
+borg prune --stats --list \
+    --keep-daily "{{ backup_keep_daily }}" \
+    --keep-monthly "{{ backup_keep_monthly }}" \
+    --keep-yearly "{{ backup_keep_yearly }}" \
+    "${REPO}"
+
+echo "=== [$(date -Is)] Бэкап ${ARCHIVE} завершён успешно ==="

@@ -1,0 +1,53 @@
+---
+- name: Создать группу borg
+  ansible.builtin.group:
+    name: "{{ borg_user }}"
+    state: present
+
+- name: Создать пользователя borg
+  ansible.builtin.user:
+    name: "{{ borg_user }}"
+    group: "{{ borg_user }}"
+    shell: /bin/bash
+    create_home: true
+
+- name: Создать файловую систему ext4 на добавленном диске
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ backup_disk_device }}"
+
+- name: Создать точку монтирования
+  ansible.builtin.file:
+    path: "{{ backup_mount_point }}"
+    state: directory
+    mode: '0750'
+
+- name: Смонтировать диск (и прописать в fstab)
+  ansible.posix.mount:
+    path: "{{ backup_mount_point }}"
+    src: "{{ backup_disk_device }}"
+    fstype: ext4
+    state: mounted
+
+- name: Владелец каталога бэкапов — borg
+  ansible.builtin.file:
+    path: "{{ backup_mount_point }}"
+    owner: "{{ borg_user }}"
+    group: "{{ borg_user }}"
+    mode: '0750'
+
+- name: Каталог .ssh у borg
+  ansible.builtin.file:
+    path: "/home/{{ borg_user }}/.ssh"
+    state: directory
+    owner: "{{ borg_user }}"
+    group: "{{ borg_user }}"
+    mode: '0700'
+
+- name: Публичный ключ client в authorized_keys borg
+  ansible.builtin.copy:
+    dest: "/home/{{ borg_user }}/.ssh/authorized_keys"
+    content: "{{ hostvars['client']['client_pubkey_content'] }}\n"
+    owner: "{{ borg_user }}"
+    group: "{{ borg_user }}"
+    mode: '0600'

@@ -1,0 +1,24 @@
+---
+- name: Установка borgbackup на обоих хостах
+  hosts: all
+  become: true
+  roles:
+    - borg_common
+
+- name: Генерация SSH-ключа на client (root)
+  hosts: client
+  become: true
+  roles:
+    - client_keygen
+
+- name: Настройка backup_server (диск, пользователь borg, authorized_keys)
+  hosts: backup_server
+  become: true
+  roles:
+    - backup_server
+
+- name: Настройка бэкапа на client (borg init, systemd timer, скрипт)
+  hosts: client
+  become: true
+  roles:
+    - client_backup
