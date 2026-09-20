@@ -1,0 +1,452 @@
+## Проверить, что все файлы на месте
+
+```bash
+root@nfsc:~/borg-backup-hw# find . -type f | sort
+./ansible/ansible.cfg
+./ansible/group_vars/all.yml
+./ansible/playbook.yml
+./ansible/requirements.yml
+./ansible/roles/backup_server/tasks/main.yml
+./ansible/roles/borg_common/tasks/main.yml
+./ansible/roles/client_backup/handlers/main.yml
+./ansible/roles/client_backup/tasks/main.yml
+./ansible/roles/client_backup/templates/borg-backup.service.j2
+./ansible/roles/client_backup/templates/borg-backup.sh.j2
+./ansible/roles/client_backup/templates/borg-backup.timer.j2
+./ansible/roles/client_keygen/tasks/main.yml
+./Vagrantfile
+root@nfsc:~/borg-backup-hw#
+
+```
+
+## Поднять стенд
+
+```bash
+root@nfsc:~/borg-backup-hw# ansible-galaxy collection install -r ansible/requirements.yml
+Starting galaxy collection install process
+Nothing to do. All requested collections are already installed. If you want to reinstall them, consider using `--force`.
+root@nfsc:~/borg-backup-hw# vagrant up
+Bringing machine 'backup_server' up with 'virtualbox' provider...
+Bringing machine 'client' up with 'virtualbox' provider...
+==> backup_server: Importing base box 'generic/ubuntu2204'...
+==> backup_server: Matching MAC address for NAT networking...
+==> backup_server: Checking if box 'generic/ubuntu2204' version '4.3.12' is up to date...
+==> backup_server: Setting the name of the VM: backup-server-vm
+==> backup_server: Clearing any previously set network interfaces...
+==> backup_server: Preparing network interfaces based on configuration...
+    backup_server: Adapter 1: nat
+    backup_server: Adapter 2: hostonly
+==> backup_server: Forwarding ports...
+    backup_server: 22 (guest) => 2222 (host) (adapter 1)
+==> backup_server: Configuring storage mediums...
+    backup_server: Disk 'backup_disk' not found in guest. Creating and attaching disk to guest...
+==> backup_server: Running 'pre-boot' VM customizations...
+==> backup_server: Booting VM...
+==> backup_server: Waiting for machine to boot. This may take a few minutes...
+    backup_server: SSH address: 127.0.0.1:2222
+    backup_server: SSH username: vagrant
+    backup_server: SSH auth method: private key
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Remote connection disconnect. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Remote connection disconnect. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server: Warning: Connection reset. Retrying...
+    backup_server:
+    backup_server: Vagrant insecure key detected. Vagrant will automatically replace
+    backup_server: this with a newly generated keypair for better security.
+    backup_server:
+    backup_server: Inserting generated public key within guest...
+    backup_server: Removing insecure key from the guest if it's present...
+    backup_server: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> backup_server: Machine booted and ready!
+==> backup_server: Checking for guest additions in VM...
+    backup_server: The guest additions on this VM do not match the installed version of
+    backup_server: VirtualBox! In most cases this is fine, but in rare cases it can
+    backup_server: prevent things such as shared folders from working properly. If you see
+    backup_server: shared folder errors, please make sure the guest additions within the
+    backup_server: virtual machine match the version of VirtualBox you have installed on
+    backup_server: your host and reload your VM.
+    backup_server:
+    backup_server: Guest Additions Version: 6.1.38
+    backup_server: VirtualBox Version: 7.0
+==> backup_server: Setting hostname...
+==> backup_server: Configuring and enabling network interfaces...
+==> client: Importing base box 'generic/ubuntu2204'...
+==> client: Matching MAC address for NAT networking...
+==> client: Checking if box 'generic/ubuntu2204' version '4.3.12' is up to date...
+==> client: Setting the name of the VM: client-vm
+==> client: Fixed port collision for 22 => 2222. Now on port 2200.
+==> client: Clearing any previously set network interfaces...
+==> client: Preparing network interfaces based on configuration...
+    client: Adapter 1: nat
+    client: Adapter 2: hostonly
+==> client: Forwarding ports...
+    client: 22 (guest) => 2200 (host) (adapter 1)
+==> client: Running 'pre-boot' VM customizations...
+==> client: Booting VM...
+==> client: Waiting for machine to boot. This may take a few minutes...
+    client: SSH address: 127.0.0.1:2200
+    client: SSH username: vagrant
+    client: SSH auth method: private key
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client: Warning: Connection reset. Retrying...
+    client:
+    client: Vagrant insecure key detected. Vagrant will automatically replace
+    client: this with a newly generated keypair for better security.
+    client:
+    client: Inserting generated public key within guest...
+    client: Removing insecure key from the guest if it's present...
+    client: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> client: Machine booted and ready!
+==> client: Checking for guest additions in VM...
+    client: The guest additions on this VM do not match the installed version of
+    client: VirtualBox! In most cases this is fine, but in rare cases it can
+    client: prevent things such as shared folders from working properly. If you see
+    client: shared folder errors, please make sure the guest additions within the
+    client: virtual machine match the version of VirtualBox you have installed on
+    client: your host and reload your VM.
+    client:
+    client: Guest Additions Version: 6.1.38
+    client: VirtualBox Version: 7.0
+==> client: Setting hostname...
+==> client: Configuring and enabling network interfaces...
+==> client: Running provisioner: ansible...
+    client: Running ansible-playbook...
+[WARNING]: Found both group and host with same name: client
+[WARNING]: Found both group and host with same name: backup_server
+
+PLAY [Установка borgbackup на обоих хостах] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+ok: [backup_server]
+
+TASK [borg_common : Обновить кэш apt] ******************************************
+changed: [backup_server]
+changed: [client]
+
+TASK [borg_common : Установить borgbackup] *************************************
+changed: [client]
+changed: [backup_server]
+
+PLAY [Генерация SSH-ключа на client (root)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [client_keygen : Сгенерировать SSH-ключ для root (используется для подключения к backup_server)] ***
+changed: [client]
+
+TASK [client_keygen : Прочитать публичный ключ] ********************************
+ok: [client]
+
+TASK [client_keygen : Сохранить публичный ключ как факт (используется в роли backup_server)] ***
+ok: [client]
+
+TASK [client_keygen : Отключить строгую проверку host key для backup_server (упрощение для стенда)] ***
+changed: [client]
+
+PLAY [Настройка backup_server (диск, пользователь borg, authorized_keys)] ******
+
+TASK [Gathering Facts] *********************************************************
+ok: [backup_server]
+
+TASK [backup_server : Создать группу borg] *************************************
+changed: [backup_server]
+
+TASK [backup_server : Создать пользователя borg] *******************************
+changed: [backup_server]
+
+TASK [backup_server : Создать файловую систему ext4 на добавленном диске] ******
+changed: [backup_server]
+
+TASK [backup_server : Создать точку монтирования] ******************************
+changed: [backup_server]
+
+TASK [backup_server : Смонтировать диск (и прописать в fstab)] *****************
+changed: [backup_server]
+
+TASK [backup_server : Владелец каталога бэкапов — borg] ************************
+changed: [backup_server]
+
+TASK [backup_server : Каталог .ssh у borg] *************************************
+changed: [backup_server]
+
+TASK [backup_server : Публичный ключ client в authorized_keys borg] ************
+changed: [backup_server]
+
+PLAY [Настройка бэкапа на client (borg init, systemd timer, скрипт)] ***********
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [client_backup : Проверить, инициализирован ли репозиторий borg] **********
+ok: [client]
+
+TASK [client_backup : Инициализировать репозиторий borg (encryption=repokey)] ***
+
+```
+
+```bash
+root@nfsc:~/borg-backup-hw# vagrant provision
+==> client: Running provisioner: ansible...
+    client: Running ansible-playbook...
+[WARNING]: Found both group and host with same name: backup_server
+[WARNING]: Found both group and host with same name: client
+
+PLAY [Установка borgbackup на обоих хостах] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [backup_server]
+ok: [client]
+
+TASK [borg_common : Обновить кэш apt] ******************************************
+ok: [backup_server]
+ok: [client]
+
+TASK [borg_common : Установить borgbackup] *************************************
+ok: [backup_server]
+ok: [client]
+
+PLAY [Генерация SSH-ключа на client (root)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [client_keygen : Сгенерировать SSH-ключ для root (используется для подключения к backup_server)] ***
+ok: [client]
+
+TASK [client_keygen : Прочитать публичный ключ] ********************************
+ok: [client]
+
+TASK [client_keygen : Сохранить публичный ключ как факт (используется в роли backup_server)] ***
+ok: [client]
+
+TASK [client_keygen : Отключить строгую проверку host key для backup_server (упрощение для стенда)] ***
+ok: [client]
+
+PLAY [Настройка backup_server (диск, пользователь borg, authorized_keys)] ******
+
+TASK [Gathering Facts] *********************************************************
+ok: [backup_server]
+
+TASK [backup_server : Создать группу borg] *************************************
+ok: [backup_server]
+
+TASK [backup_server : Создать пользователя borg] *******************************
+ok: [backup_server]
+
+TASK [backup_server : Создать файловую систему ext4 на добавленном диске] ******
+ok: [backup_server]
+
+TASK [backup_server : Создать точку монтирования] ******************************
+ok: [backup_server]
+
+TASK [backup_server : Смонтировать диск (и прописать в fstab)] *****************
+ok: [backup_server]
+
+TASK [backup_server : Владелец каталога бэкапов — borg] ************************
+ok: [backup_server]
+
+TASK [backup_server : Каталог .ssh у borg] *************************************
+ok: [backup_server]
+
+TASK [backup_server : Публичный ключ client в authorized_keys borg] ************
+ok: [backup_server]
+
+PLAY [Настройка бэкапа на client (borg init, systemd timer, скрипт)] ***********
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [client_backup : Проверить, инициализирован ли репозиторий borg] **********
+ok: [client]
+
+TASK [client_backup : Инициализировать репозиторий borg (encryption=repokey)] ***
+changed: [client]
+
+TASK [client_backup : Положить скрипт бэкапа] **********************************
+changed: [client]
+
+TASK [client_backup : systemd unit — сервис бэкапа] ****************************
+changed: [client]
+
+TASK [client_backup : systemd unit — таймер (каждые 5 минут)] ******************
+changed: [client]
+
+TASK [client_backup : Применить reload systemd сразу (перед enable/start)] *****
+
+RUNNING HANDLER [client_backup : reload systemd] *******************************
+ok: [client]
+
+TASK [client_backup : Включить и запустить таймер] *****************************
+changed: [client]
+
+PLAY RECAP *********************************************************************
+backup_server              : ok=12   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+client                     : ok=16   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+root@nfsc:~/borg-backup-hw#
+
+```
+
+## Проверить, что таймер бэкапа запущен
+
+```bash
+root@nfsc:~/borg-backup-hw# vagrant ssh client -c "sudo systemctl list-timers borg-backup.timer"
+NEXT                        LEFT          LAST                        PASSED       UNIT              >
+Sun 2026-09-20 14:33:53 UTC 1min 41s left Sun 2026-09-20 14:28:53 UTC 3min 18s ago borg-backup.timer >
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+root@nfsc:~/borg-backup-hw#
+
+```
+
+## Проверить логи бэкапа
+
+```bash
+root@nfsc:~/borg-backup-hw# vagrant ssh client -c "sudo journalctl -u borg-backup.service -n 50"
+Sep 20 14:29:09 client borg-backup[5024]: s /etc/apm/other.d/50ifplugd
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/apm/other.d
+Sep 20 14:29:09 client borg-backup[5024]: s /etc/apm/resume.d/80ifplugd
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/apm/resume.d
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/apm/scripts.d/ifplugd
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/apm/scripts.d
+Sep 20 14:29:09 client borg-backup[5024]: s /etc/apm/suspend.d/20ifplugd
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/apm/suspend.d
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/apm
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/ifplugd/action.d/ifupdown
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/ifplugd/action.d
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/ifplugd/ifplugd.action
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/ifplugd/ifplugd.conf
+Sep 20 14:29:09 client borg-backup[5024]: d /etc/ifplugd
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/gshadow
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/vagrant_box_build_time
+Sep 20 14:29:09 client borg-backup[5024]: U /etc/group
+Sep 20 14:29:09 client borg-backup[5024]: d /etc
+Sep 20 14:29:10 client borg-backup[5024]: ----------------------------------------------------------->
+Sep 20 14:29:10 client borg-backup[5024]: Repository: ssh://borg@192.168.56.11/var/backup/repo
+Sep 20 14:29:10 client borg-backup[5024]: Archive name: etc-2026-09-20_14:28:53
+Sep 20 14:29:10 client borg-backup[5024]: Archive fingerprint: bed46990f4bd50f2b1310ed0644fa06f050d93>
+Sep 20 14:29:10 client borg-backup[5024]: Time (start): Sun, 2026-09-20 14:29:05
+Sep 20 14:29:10 client borg-backup[5024]: Time (end):   Sun, 2026-09-20 14:29:09
+Sep 20 14:29:10 client borg-backup[5024]: Duration: 3.59 seconds
+Sep 20 14:29:10 client borg-backup[5024]: Number of files: 705
+Sep 20 14:29:10 client borg-backup[5024]: Utilization of max. archive size: 0%
+Sep 20 14:29:10 client borg-backup[5024]: ----------------------------------------------------------->
+Sep 20 14:29:10 client borg-backup[5024]:                        Original size      Compressed size  >
+Sep 20 14:29:10 client borg-backup[5024]: This archive:                2.12 MB            931.70 kB  >
+Sep 20 14:29:10 client borg-backup[5024]: All archives:                6.35 MB              2.79 MB  >
+Sep 20 14:29:10 client borg-backup[5024]:                        Unique chunks         Total chunks
+Sep 20 14:29:10 client borg-backup[5024]: Chunk index:                     679                 2079
+Sep 20 14:29:10 client borg-backup[5024]: ----------------------------------------------------------->
+Sep 20 14:29:11 client borg-backup[5021]: === [2026-09-20T14:29:11+00:00] Проверка целостности репози>
+Sep 20 14:29:25 client borg-backup[5021]: === [2026-09-20T14:29:25+00:00] Очистка старых архивов (pru>
+Sep 20 14:29:37 client borg-backup[5032]: Keeping archive (rule: daily #1):        etc-2026-09-20_14:>
+Sep 20 14:29:38 client borg-backup[5032]: Pruning archive (1/1):                   etc-2026-09-20_14:>
+Sep 20 14:29:38 client borg-backup[5032]: Keeping archive (rule: daily[oldest] #2): etc-2026-09-20_14>
+Sep 20 14:29:40 client borg-backup[5032]: ----------------------------------------------------------->
+Sep 20 14:29:40 client borg-backup[5032]:                        Original size      Compressed size  >
+Sep 20 14:29:40 client borg-backup[5032]: Deleted data:               -2.37 MB             -1.00 MB  >
+Sep 20 14:29:40 client borg-backup[5032]: All archives:                4.23 MB              1.86 MB  >
+Sep 20 14:29:40 client borg-backup[5032]:                        Unique chunks         Total chunks
+Sep 20 14:29:40 client borg-backup[5032]: Chunk index:                     678                 1386
+Sep 20 14:29:40 client borg-backup[5032]: ----------------------------------------------------------->
+Sep 20 14:29:41 client borg-backup[5021]: === [2026-09-20T14:29:41+00:00] Бэкап etc-2026-09-20_14:28:>
+Sep 20 14:29:41 client systemd[1]: borg-backup.service: Deactivated successfully.
+Sep 20 14:29:41 client systemd[1]: Finished Borg Backup of /etc.
+Sep 20 14:29:41 client systemd[1]: borg-backup.service: Consumed 15.524s CPU time.
+lines 26-50/50 (END)root@nfsc:~/borg-backup-hw#
+
+```
+
+## Проверить, что архивы реально создаются
+
+```bash
+root@client:/restore# BORG_PASSPHRASE=Otus1234SuperSecret borg list borg@192.168.56.11:/var/backup/repo/
+etc-2026-09-20_14:17:30              Sun, 2026-09-20 14:17:45 [1dcde71455ae18ae0ab9ee3325a4267168f98c88e683a1bb5c7387207ad8949c]
+etc-2026-09-20_16:14:33              Sun, 2026-09-20 16:14:46 [bcff8027917bf6aef7a2c9b83aad493c788652ee58c872d98d32efd97491c10b]
+
+
+```
+
+
+## Удалить /etc на client Восстановить /etc из бэкапа
+
+```bash
+vagrant ssh client
+sudo -i
+root@client:/restore# BORG_PASSPHRASE=Otus1234SuperSecret borg list borg@192.168.56.11:/var/backup/repo/
+etc-2026-09-20_14:17:30              Sun, 2026-09-20 14:17:45 [1dcde71455ae18ae0ab9ee3325a4267168f98c88e683a1bb5c7387207ad8949c]
+etc-2026-09-20_16:14:33              Sun, 2026-09-20 16:14:46 [bcff8027917bf6aef7a2c9b83aad493c788652ee58c872d98d32efd97491c10b]
+root@client:/restore# BORG_PASSPHRASE=Otus1234SuperSecret borg extract borg@192.168.56.11:/var/backup/repo/::etc-2026-09-20_16:14:33
+root@client:/restore# ls
+etc
+root@client:/restore# mv /etc /etc.broken
+mv /restore/etc /etc
+root@client:/restore#
+root@client:/restore# ls /etc | wc -l
+189
+root@client:/restore# rm -rf /restore
+root@client:/restore# cd /
+ls /etc | wc -l
+systemctl status ssh
+189
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2026-09-20 15:44:20 UTC; 41min ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 1378 (sshd)
+      Tasks: 1 (limit: 1013)
+     Memory: 4.4M
+        CPU: 4.173s
+     CGroup: /system.slice/ssh.service
+             └─1378 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+
+Sep 20 15:44:21 ubuntu2204.localdomain sshd[1372]: Accepted publickey for vagrant from 10.0.2.2 port >
+Sep 20 15:44:21 ubuntu2204.localdomain sshd[1372]: pam_unix(sshd:session): session opened for user va>
+Sep 20 15:44:28 ubuntu2204.localdomain sshd[1560]: Accepted publickey for vagrant from 10.0.2.2 port >
+Sep 20 15:44:28 ubuntu2204.localdomain sshd[1560]: pam_unix(sshd:session): session opened for user va>
+Sep 20 15:44:47 ubuntu2204.localdomain sshd[1766]: Accepted publickey for vagrant from 10.0.2.2 port >
+Sep 20 15:44:47 ubuntu2204.localdomain sshd[1766]: pam_unix(sshd:session): session opened for user va>
+Sep 20 15:45:42 client sshd[2075]: Accepted publickey for vagrant from 10.0.2.2 port 56964 ssh2: ED25>
+Sep 20 15:45:43 client sshd[2075]: pam_unix(sshd:session): session opened for user vagrant(uid=1000) >
+Sep 20 16:15:50 client sshd[5431]: Accepted publickey for vagrant from 10.0.2.2 port 39048 ssh2: ED25>
+Sep 20 16:15:50 client sshd[5431]: pam_unix(sshd:session): session opened for user vagrant(uid=1000) >
+lines 1-22/22 (END)
+root@client:/#
+
+
+```
+
+##  Запустить бэкап обратно
+
+```bash
+vagrant ssh client -c "sudo systemctl start borg-backup.timer"
+```
